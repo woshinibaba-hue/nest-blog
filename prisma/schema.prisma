@@ -20,8 +20,8 @@ model users {
   mobile     String?   @db.Char(11)
   avatar     String?   @db.VarChar(255)
   status     Int?      @default(1)
-  auto       Int
-  referral   String?   @db.VarChar(255)
+  auto       Int?      @default(3)
+  referral   String?   @default("这个人好懒，什么都没留下~") @db.VarChar(255)
   qqInfo     String?   @db.VarChar(1024)
   unionid    String?   @db.VarChar(255)
   createtime DateTime? @default(now())

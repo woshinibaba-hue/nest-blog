@@ -9,38 +9,19 @@ export class UserService {
 
   // 注册用户
   async register(registerDto: RegisterDto) {
-    const {
-      username,
-      email = null,
-      password = null,
-      mobile = null,
-      referral = '这个人好懒，什么都没留下~',
-      auto = 3,
-      avatar = null,
-      status = 1,
-      github_id = null,
-      github_url = null,
-      qqInfo = null,
-      unionid = null,
-    } = registerDto
-
-    const pwd = await hash(password)
+    const password = await hash(registerDto.password)
 
     return await this.prisma.users.create({
-      data: {
-        username,
-        email,
-        password: pwd,
-        mobile,
-        referral,
-        auto,
-        avatar,
-        status,
-        github_id,
-        github_url,
-        qqInfo,
-        unionid,
+      // 需要返回给客户端的数据
+      select: {
+        id: true,
+        email: true,
+        mobile: true,
+        avatar: true,
+        referral: true,
       },
+      // 需要存入数据库的数据
+      data: { ...registerDto, password },
     })
   }
 }
