@@ -9,19 +9,21 @@ datasource db {
 }
 
 // user
-model user {
-  id         Int      @id @default(autoincrement())
-  username   String   @db.VarChar(20)
-  email      String   @db.VarChar(30)
-  isBoss     Int      @default(0)
-  github_id  Int
-  github_url String   @db.VarChar(255)
-  password   String   @db.VarChar(255)
-  mobile     String   @db.Char(11)
-  avatar     String   @db.VarChar(255)
-  status     Int      @default(1)
+model users {
+  id         Int       @id @default(autoincrement())
+  username   String    @db.VarChar(20)
+  email      String?   @db.VarChar(30)
+  isBoss     Int?      @default(0)
+  github_id  Int?
+  github_url String?
+  password   String?   @db.VarChar(255)
+  mobile     String?   @db.Char(11)
+  avatar     String?   @db.VarChar(255)
+  status     Int?      @default(1)
   auto       Int
-  referral   String   @db.VarChar(255)
-  createtime DateTime @default(now())
-  updatetime DateTime @updatedAt
+  referral   String?   @db.VarChar(255)
+  qqInfo     String?   @db.VarChar(1024)
+  unionid    String?   @db.VarChar(255)
+  createtime DateTime? @default(now())
+  updatetime DateTime? @updatedAt
 }
