@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { IsEmail, IsMobilePhone, IsNotEmpty } from 'class-validator'
 
 import { IsExistRule } from '../../rules/is-exist-rule'
 
@@ -13,6 +13,7 @@ export class RegisterDto {
   password?: string | null
 
   @IsExistRule('users', { message: '手机号已存在' })
+  @IsMobilePhone()
   mobile?: string | null
 
   referral?: string | null
