@@ -4,7 +4,14 @@
 import { PrismaClient } from '@prisma/client'
 import { registerDecorator, ValidationOptions } from 'class-validator'
 
-export function IsExistRule(tableName: string, validationOptions?: ValidationOptions) {
+/**
+ *
+ * @param tableName 需要验证的数据库表名
+ * @param validationOptions 其它选项
+ * @param isRevers false 验证已存在 true 验证不存在
+ * @returns
+ */
+export function IsExistRule(tableName: string, validationOptions?: ValidationOptions, isRevers = false) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isExistRule',
@@ -22,7 +29,7 @@ export function IsExistRule(tableName: string, validationOptions?: ValidationOpt
             },
           })
 
-          return !Boolean(res)
+          return isRevers ? Boolean(res) : !Boolean(res)
         },
       },
     })

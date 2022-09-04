@@ -1,11 +1,35 @@
+import { HttpException, Injectable } from '@nestjs/common'
+import { hash, verify } from 'argon2'
 import { PrismaService } from './../prisma/prisma.service'
-import { Injectable } from '@nestjs/common'
+import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
-import { hash } from 'argon2'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private jwt: JwtService) {}
+
+  // 登录
+  async login(loginDto: LoginDto) {
+    const user = await this.prisma.users.findFirst({
+      where: {
+        email: loginDto.email,
+      },
+    })
+
+    if (!(await verify(user.password, loginDto.password))) {
+      throw new HttpException('账号或密码错误', 400)
+    }
+
+    // 生成token
+    const token = await this.jwt.signAsync({ username: user.username, sub: user.id })
+    delete user.password
+
+    return {
+      ...user,
+      token,
+    }
+  }
 
   // 注册用户
   async register(registerDto: RegisterDto) {
@@ -26,7 +50,7 @@ export class UserService {
   }
 
   // 查询用户
-  async find({ page = 1, size = 10, username, mobile, status, auto, email }) {
+  async find({ page = 1, size = 10 }) {
     // take 数据条数
     // skip 偏移量
     const data = await this.prisma.users.findMany({
